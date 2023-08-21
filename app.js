@@ -11,7 +11,10 @@ const Sequelize = require("./utils/database");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(cors());
+app.use(cors({
+      origin: 'http://127.0.0.1:5500',
+     
+}));
 app.use(userRoutes);
 
 Sequelize.sync()
