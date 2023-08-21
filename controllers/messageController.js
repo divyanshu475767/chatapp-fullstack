@@ -22,3 +22,27 @@ exports.postMessage = async (req, res, next) => {
     return res.json({ message: "user not found" });
   }
 };
+
+
+exports.getMessage = async (req, res, next) => {
+
+    const userId = req.userId;
+    console.log('leomnnnnnnnnnnn',userId);
+
+    const user = await users.findOne({ where: { id: userId } });
+    console.log('leom',user.id);
+
+    if(user){
+     const message = await messages.findAll({where:{SignupId:userId}})
+    return res.json({ messages: message})
+    }
+    else{
+    return res.json({ message: "user not found" });
+
+    }
+
+
+
+
+
+}
