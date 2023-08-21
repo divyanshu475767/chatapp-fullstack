@@ -31,6 +31,11 @@
             border-radius: 5px;
             padding: 10px;
             margin: 5px 0;
+            width: fit-content;
+           
+  white-space: nowrap;
+  
+            
         }
         .user-list {
             background-color: #f8f9fa;
@@ -92,30 +97,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const chatMessages = document.getElementById("chat-messages");
-            const messageInput = document.getElementById("message-input");
-            const sendButton = document.getElementById("send-button");
-            const userList = document.getElementById("user-list");
-
-            sendButton.addEventListener("click", function () {
-                const message = messageInput.value;
-                if (message.trim() !== "") {
-                    const messageElement = document.createElement("p");
-                    messageElement.classList.add("message");
-                    messageElement.textContent = message;
-                    chatMessages.appendChild(messageElement);
-                    messageInput.value = "";
-                }
-            });
-            const users = ["User1", "User2", "User3"];
-            users.forEach(user => {
-                const userItem = document.createElement("li");
-                userItem.textContent = user;
-                userList.appendChild(userItem);
-            });
-        });
-    </script>
+    
 </body>
 </html>

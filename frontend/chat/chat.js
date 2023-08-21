@@ -6,7 +6,7 @@ const userList = document.getElementById("user-list");
 sendButton.addEventListener('click',async ()=>{
 
     const message = messageInput.value;
-    messageInput.value = "";
+    
  
 const token = localStorage.getItem('token');
 console.log(token);
@@ -21,7 +21,16 @@ console.log(token);
         }
 
     })
+
+    const messageElement = document.createElement("p");
+    messageElement.classList.add("message");
+    messageElement.textContent = message;;
+    chatMessages.appendChild(messageElement);
+    messageInput.value = "";
+
 })
+
+
 
 
 document.addEventListener('DOMContentLoaded',async ()=>{

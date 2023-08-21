@@ -21,6 +21,7 @@ loginForm.addEventListener("submit", (e) => {
       if (token) {
         alert("login successful");
         localStorage.setItem("token", token);
+        window.location.href='../chat/chat.html';
       }
     })
     .catch((error) => {

@@ -25,6 +25,7 @@ form.addEventListener("submit", (e) => {
       alert("User already registered");
     } else {
       alert("congrats , you are now registered");
+      window.location.href='../login/login.html';
     }
   });
 });
