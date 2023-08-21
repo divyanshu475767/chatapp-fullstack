@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat App</title>
-    <!-- Link to Bootstrap CSS -->
+   
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Link to your custom CSS (if needed) -->
+   
     <style>
         body {
             background-color: #f8f9fa;
+            display: flex;
         }
         .chat-container {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            height: 80vh; /* Set a fixed height for the container */
+            height: 95vh; 
             margin-top: 20px;
             padding: 20px;
             border: 1px solid #ccc;
@@ -26,13 +27,21 @@
             margin-bottom: 20px;
         }
         .message {
-            background-color: #f0f0f0;
+            background-color: #ec7e7e;
             border-radius: 5px;
             padding: 10px;
             margin: 5px 0;
         }
         .user-list {
             background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            width: 300px;
+        }
+        .user-list  li{
+            background-color: #97c1eb;
+            list-style-type: none;
             border-radius: 5px;
             padding: 10px;
             margin-top: 10px;
@@ -46,22 +55,24 @@
     </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="user-list">
+        <h5>Users in the Chat</h5>
+        <ul id="user-list">
+            
+        </ul>
+    </div>
+    
+    <div class="container ">
         <div class="row">
             <div class="col-md-8 offset-md-2">
-                <div class="user-list">
-                    <h5>Users in the Chat</h5>
-                    <ul id="user-list">
-                        
-                    </ul>
-                </div>
+                
                 <div class="chat-container">
-                    <div class="card chat-card">
+                   
                         
                         <div class="card-body" id="chat-messages">
                            
                         </div>
-                    </div>
+                  
                   
                     <div class="input-group">
                         <input type="text" id="message-input" class="form-control" placeholder="Type your message...">
@@ -73,13 +84,14 @@
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js"></script>
 
-    <!-- Link to Bootstrap JS and jQuery -->
+   <script src="./chat.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Your custom script -->
+    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const chatMessages = document.getElementById("chat-messages");
@@ -97,8 +109,6 @@
                     messageInput.value = "";
                 }
             });
-
-           
             const users = ["User1", "User2", "User3"];
             users.forEach(user => {
                 const userItem = document.createElement("li");
