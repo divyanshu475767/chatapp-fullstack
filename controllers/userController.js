@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const users = require("../models/signup");
 
@@ -26,5 +27,39 @@ exports.signup = async (req, res, next) => {
     }
   } catch (err) {
     return res.status(404).json({ success: false });
+  }
+};
+
+function generateAccessToken(id) {
+  const token = jwt.sign({ userId: id }, "myToken");
+  return token;
+}
+
+exports.login = async (req, res, next) => {
+  const body = req.body;
+  console.log(req.body.email);
+
+  try {
+    const data = await users.findAll({ where: { email: req.body.email } });
+
+    if (data[0]) {
+      const response = await bcrypt.compare(
+        req.body.password,
+        data[0].dataValues.password
+      );
+
+      if (response) {
+        const id = data[0].dataValues.id;
+        const token = generateAccessToken(id);
+        console.log(token);
+        res.json({ id: token });
+      } else {
+        res.status(401).send("User not authorized");
+      }
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    res.status(500).send("Something went wrong");
   }
 };
