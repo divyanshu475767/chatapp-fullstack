@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Group - Chat App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      width: 400px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      font-size: 16px;
+    }
+
+    
+    input[type="checkbox"]{
+
+        
+    }
+    .user-list {
+      max-height: 150px; /* Set a maximum height for the user list */
+      overflow-y: auto; /* Add scroll if user list exceeds maximum height */
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 3px;
+    }
+
+    #user{
+        display: flex;
+        gap: 1rem;
+        padding: 4px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Create New Group</h1>
+    <form id="form">
+      <label for="groupName">Group Name</label>
+      <input type="text" id="groupName" name="groupName" required>
+      
+      <label>Select Users</label>
+      <div class="user-list">
+        <div id="user" class="user">
+          <input type="checkbox" id="user1" name="selectedUsers[]" value="user1">
+          <label for="user1">User 1</label>
+        </div> 
+      </div>
+      
+      <button type="submit">Create Group</button>
+    </form>
+    <a href="./chat.html">View Your groups</a>
+  </div>
+  <script src="./group.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js"></script>
+
+</body>
+</html>

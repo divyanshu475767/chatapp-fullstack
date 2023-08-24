@@ -11,6 +11,11 @@ const messageRoutes = require("./routes/messageRoutes.js");
 const Sequelize = require("./utils/database");
 const messages = require("./models/messages.js");
 const users = require("./models/signup.js");
+const groups = require("./models/groups.js");
+const UserGroup = require("./models/usergroups");
+
+
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -23,8 +28,17 @@ app.use(userRoutes);
 app.use(messageRoutes);
 
 
+
+
 users.hasMany(messages);
 messages.belongsTo(users);
+
+groups.hasMany(messages);
+messages.belongsTo(groups);
+
+users.belongsToMany(groups , {through:UserGroup});
+groups.belongsToMany(users , {through:UserGroup});
+
 
 
 Sequelize.sync()

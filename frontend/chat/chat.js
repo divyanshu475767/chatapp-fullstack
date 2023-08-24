@@ -1,64 +1,137 @@
 const messageInput = document.getElementById('message-input');
 const sendButton = document.getElementById('send-button');
 const chatMessages = document.getElementById("chat-messages");
-const userList = document.getElementById("user-list");
+const userGroupsList = document.getElementById("user-groups-list");
+const button = document.getElementById('button');
+const createGroup = document.getElementById('createGroup');
+const chatContainer = document.querySelector('.container');
+const groupName = document.getElementById('group-name');
+
+
+let currentGroupId = null;
 
 
 
+userGroupsList.addEventListener('click',async(e)=>{
 
 
+    if(e.target.classList.contains('button')){
+            chatMessages.textContent = '';
+   currentGroupId =  e.target.value;
+   chatContainer.style.display = 'block';
+   groupName.textContent = e.target.textContent;
 
 
+   setInterval(async()=>{
+    chatMessages.textContent = '';
 
-sendButton.addEventListener('click',async ()=>{
-
-    const message = messageInput.value;
-    console.log(localStorage.getItem('lemon'));
+    const response=  await   axios({
+        method: "get",
+        url: `http://localhost:3000/getMessages/${currentGroupId}`,
+       
     
+    })
+
+
+    response.data.messages.forEach(msg=>{
+
+
+        const messageElement = document.createElement("p");
+        messageElement.classList.add("message");
+       let  userName = localStorage.getItem(msg.SignupId)
+        messageElement.textContent =`${userName}:: ${msg.message}`
+        chatMessages.appendChild(messageElement);
+    
+    
+       })
+
+
+
+
+   },1000)
+  
+
+   
+
  
+
+    }
+    })
+
+
+
+
+
+
+    sendButton.addEventListener('click',async ()=>{
+
+        if(currentGroupId === null){
+            console.log('No group selected');
+            return;
+        }
+
+        const message = messageInput.value;
+       
+    const token = localStorage.getItem('token');
+    
+     const response = await   axios({
+            method: "post",
+            url: "http://localhost:3000/message",
+            data: {
+              message:message,
+              groupId:currentGroupId
+              
+            },
+            headers:{
+                "Authorization":token
+            }
+    
+        })
+    
+       
+        const messageElement = document.createElement("p");
+        messageElement.classList.add("message");
+        messageElement.textContent = `You:: ${message}`;
+        chatMessages.appendChild(messageElement);
+        messageInput.value = "";
+    
+        
+     
+    
+    })
+    
+    
+document.addEventListener('DOMContentLoaded',async ()=>{
+
 const token = localStorage.getItem('token');
-console.log(token);
- const response = await   axios({
-        method: "post",
-        url: "http://localhost:3000/message",
-        data: {
-          message:message,
-        },
+    
+    const response = await   axios({
+        method: "get",
+        url: "http://localhost:3000/getAllGroups",
+        
         headers:{
             "Authorization":token
         }
 
     })
 
-   
-    const messageElement = document.createElement("p");
-    messageElement.classList.add("message");
-    messageElement.textContent = message;;
-    chatMessages.appendChild(messageElement);
-    messageInput.value = "";
- let n = localStorage.length;
- n++;
+    response.data.forEach(group=>{
+      
+     const newButton = button.cloneNode(true);
 
- localStorage.setItem(n, message);
+     newButton.value = group.id;
+     newButton.textContent = group.name
+     userGroupsList.appendChild(newButton);
+     
+
+    })
+
+
 
 
 })
 
 
-
-
-document.addEventListener('DOMContentLoaded',async ()=>{
-
- let n = localStorage.length;
-    
-        for(var i=2;i<=n;i++){
-        const messageElement = document.createElement("p");
-        messageElement.classList.add("message");
-        messageElement.textContent =localStorage.getItem(i) ;
-        chatMessages.appendChild(messageElement);
-       
-        }
-})
 
 
 

@@ -6,7 +6,7 @@ const authentication = require('../middleware/auth.js');
 
 router.post('/message',authentication.authenticate,messageController.postMessage);
 
-router.get('/getMessages',authentication.authenticate,messageController.getMessage);
+router.get('/getMessages/:groupId',messageController.getMessage);
 
 
 module.exports = router;

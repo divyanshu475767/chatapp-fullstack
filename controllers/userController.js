@@ -2,6 +2,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const users = require("../models/signup");
+const groups = require("../models/groups");
+const UserGroup = require("../models/usergroups");
+
 
 exports.signup = async (req, res, next) => {
   try {
@@ -63,3 +66,75 @@ exports.login = async (req, res, next) => {
     res.status(500).send("Something went wrong");
   }
 };
+
+exports.getAllUsers = async (req, res) => {
+  const allUsers = await users.findAll();
+
+  console.log(allUsers)
+
+  return res.json({ allUsers });
+};
+
+exports.createGroup = async (req, res) => {
+
+  try{
+
+  const group = await groups.create({
+    name: req.body.groupName,
+  });
+  userIds = req.body.participants.map((id) => parseInt(id, 10));
+ 
+  userIds.forEach(async(id)=>{
+   
+    await UserGroup.create({
+   SignupId: id,
+   groupId: group.id
+    });
+  })
+
+    res.json({msg:'group created successfully'});
+  }
+catch(err){
+   return res.json({msg:'group could not be created'})
+}
+  
+
+
+  
+};
+
+
+
+exports.getAllGroups = async (req, res) => {
+
+  const userId = req.userId;
+  console.log(userId);
+
+ const user_groups = await UserGroup.findAll({where:{SignupId: userId}})
+
+ //console.log(user_groups);
+
+  var AllGroups = [];
+
+  for (const group of user_groups) {
+
+  
+    const groupDetails = await groups.findOne({where:{id: group.groupId}})
+
+    let id = groupDetails.id;
+    let name = groupDetails.name;
+    
+  
+    
+    AllGroups.push({id , name })
+
+  
+    }
+
+
+    res.send(AllGroups);
+
+  
+
+
+}
