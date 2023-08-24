@@ -6,6 +6,9 @@ const p = document.getElementById("loginStatus");
 loginForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
+
+ 
+
   axios({
     method: "post",
     url: "http://localhost:3000/login",
@@ -14,19 +17,49 @@ loginForm.addEventListener("submit", (e) => {
       password: loginPassword.value,
     },
   })
-    .then((response) => {
-      console.log(response);
+    .then(async(response) => {
+     // console.log(response);
       const token = response.data.id;
+      
 
       if (token) {
         alert("login successful");
-        localStorage.setItem("token", token);
-        window.location.href='../chat/chat.html';
+        localStorage.clear();
+        localStorage.setItem("token", token);   
+      const response = await   axios({
+          method: "get",
+          url: "http://localhost:3000/getMessages",
+         
+          headers:{
+              "Authorization":token
+          }
+  
+      })
+
+
+      console.log(response);
+      let local_storage_length = localStorage.length;
+      console.log(local_storage_length);
+      response.data.messages.forEach(value=>{
+          
+          local_storage_length++;
+          localStorage.setItem(local_storage_length ,value.message );
+         
+
+      })
+  
+  
+
+        
+  window.location.href='../chat/chat.html';
+
       }
     })
+    /*
     .catch((error) => {
       alert(error.response.data);
     });
+    */
 
   loginForm.reset();
 });
