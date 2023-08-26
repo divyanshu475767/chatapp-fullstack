@@ -97,21 +97,120 @@
       .container{
         display: none;
       }
+
+      #edit-group{
+        margin-top: 10px;
+        border: 2px solid rgb(1, 1, 33);
+        border-radius: 5px;
+        background-color: #10e5d3;
+      }
+
+
+      #addUserForm{
+        display: none;
+      }
+
+      #removeUserForm{
+        display: none;
+      }
+      #addAdminsForm{
+        display: none;
+      }
+
+      #addusers{
+        display: none;
+      }
+
+      #removeUsers{
+        display: none;
+      }
+
+      #addAdmins{
+      display: none;
+
+      }
     </style>
   </head>
   <body>
 
     <div class="user-groups">
-
       <ul id="user-groups-list">
         <h5>Your Groups</h5>
     <a href="./group.html"> Create New groups</a>
 
         <button id="button" class="button">demo</button>
       </ul>
+
+      <div class="add-members">
+
+        <button id="addusers">Add members</button>
+
+
+        <form id="addUserForm">
+          <div id="remaining-members">
+          <div id="user" class="user">
+            <input type="checkbox"  value="user1">
+            <label for="user1">demo</label>
+          </div> 
+        </div>
+      
+          <button type="submit">
+            Add 
+          </button>
+        </form>
+      
+        
+       
+      </div>
+
+      <div class="remove-members">
+
+        <button id="removeUsers">Remove members</button>
+
+
+        <form id="removeUserForm">
+          <div id="allMembers">
+          <div id="existingUser" class="user">
+            <input type="checkbox"  value="user1">
+            <label for="user1">demo</label>
+          </div> 
+        </div>
+      
+          <button type="submit">
+            Remove
+          </button>
+        </form>
+      
+        
+       
+      </div>
+
+      <div class="add-admins">
+
+        <button id="addAdmins">Add admins</button>
+
+
+        <form id="addAdminsForm">
+          <div id="allMembersMinusMain">
+          <div id="tobe_admin" class="user">
+            <input type="checkbox"  value="user1">
+            <label for="user1">demo</label>
+          </div> 
+        </div>
+      
+          <button type="submit">
+            Add
+          </button>
+        </form>
+      
+        
+       
+      </div>
+      
     </div>
 
     <div class="container">
+
    
         <div class="col-md-8 offset-md-2">
           <div class="chat-container">
