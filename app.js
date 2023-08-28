@@ -1,6 +1,8 @@
 const express = require("express");
+const http = require("http");
 
 const app = express();
+const server = http.createServer(app);
 
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -15,18 +17,36 @@ const groups = require("./models/groups.js");
 const UserGroup = require("./models/usergroups");
 
 
+const io = require('socket.io')(server ,{
+  cors: {
+    origin: 'http://127.0.0.1:5501', // Replace with your frontend's origin
+    methods: ['GET', 'POST']
+  }
+
+
+})
+
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(cors({
-      origin: 'http://127.0.0.1:5500',
+      origin: 'http://127.0.0.1:5501',
      
 }));
 app.use(userRoutes);
 app.use(messageRoutes);
 
+
+io.on('connection',(socket)=>{
+  console.log('connected.....')
+
+  socket.on('message',(msg)=>{
+   // console.log(msg);
+   socket.broadcast.emit('message',msg)
+  })
+})
 
 
 
@@ -41,9 +61,10 @@ groups.belongsToMany(users , {through:UserGroup});
 
 
 
+
 Sequelize.sync()
   .then((result) => {
-    app.listen(3000);
+    server.listen(3000);
   })
   .catch((error) => {
     console.log(error);

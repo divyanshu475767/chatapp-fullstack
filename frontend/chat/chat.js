@@ -19,6 +19,8 @@ const addAdmins = document.getElementById("addAdmins");
 const addAdminsForm = document.getElementById("addAdminsForm");
 const allMembersMinusMain = document.getElementById("allMembersMinusMain");
 
+const socket = io('http://localhost:3000',{ transports: ['websocket'] });
+
 
 
 let removeClickCount = 0;
@@ -344,8 +346,14 @@ sendButton.addEventListener("click", async () => {
     return;
   }
 
-  const message = messageInput.value;
+  
 
+
+  const message = messageInput.value;
+  socket.emit('message',{
+    message:message,
+    groupId: currentGroupId,
+  })
   const token = localStorage.getItem("token");
 
   const response = await axios({
@@ -387,3 +395,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     userGroupsList.appendChild(newButton);
   });
 });
+
+
+
+socket.on('message',(msg)=>{
+  console.log(msg);
+
+  if(currentGroupId == msg.groupId){
+
+  const message = msg.message
+  const messageElement = document.createElement("p");
+  messageElement.classList.add("message");
+  messageElement.textContent = `Divyanshu:: ${message}`;
+  chatMessages.appendChild(messageElement);
+  messageInput.value = "";
+  }
+})
