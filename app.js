@@ -28,13 +28,18 @@ const io = require('socket.io')(server ,{
 
 
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(cors({
       origin: 'http://127.0.0.1:5501',
      
 }));
+
+const file = require('express-fileupload');
+app.use(file());
+
+
 app.use(userRoutes);
 app.use(messageRoutes);
 
@@ -46,6 +51,16 @@ io.on('connection',(socket)=>{
    // console.log(msg);
    socket.broadcast.emit('message',msg)
   })
+
+
+
+  socket.on('url',(message)=>{
+    socket.broadcast.emit('url',message)
+    
+   })
+
+
+
 })
 
 

@@ -19,19 +19,16 @@ const addAdmins = document.getElementById("addAdmins");
 const addAdminsForm = document.getElementById("addAdminsForm");
 const allMembersMinusMain = document.getElementById("allMembersMinusMain");
 
-const socket = io('http://localhost:3000',{ transports: ['websocket'] });
-
-
+const socket = io("http://localhost:3000", { transports: ["websocket"] });
 
 let removeClickCount = 0;
 let addClickCount = 0;
 
-
-addAdmins.addEventListener("click",async()=>{
+addAdmins.addEventListener("click", async () => {
   const token = localStorage.getItem("token");
 
-  if(addClickCount%2==0){
-    addAdminsForm.style.display = 'block';
+  if (addClickCount % 2 == 0) {
+    addAdminsForm.style.display = "block";
     addClickCount++;
     allMembersMinusMain.textContent = "none";
 
@@ -46,7 +43,6 @@ addAdmins.addEventListener("click",async()=>{
 
     console.log(allNonAdmins.data);
 
-   
     allNonAdmins.data.forEach((data) => {
       let userDetails = existingUser.cloneNode(true);
 
@@ -54,146 +50,105 @@ addAdmins.addEventListener("click",async()=>{
       userDetails.children[1].textContent = data.name;
       allMembersMinusMain.appendChild(userDetails);
     });
-
-  }
-
-  else{
+  } else {
     addAdminsForm.style.display = "none";
     addClickCount++;
-      
   }
+});
 
-})
+addAdminsForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
+  const selectedUsers = [];
+  const userDivs = document.querySelectorAll(".user");
 
-addAdminsForm.addEventListener("submit",async(e)=>{
+  userDivs.forEach((user) => {
+    const checkbox = user.querySelector('input[type="checkbox"]');
+
+    if (checkbox.checked) {
+      selectedUsers.push(checkbox.value);
+    }
+  });
+
+  console.log(selectedUsers);
+
+  const adminResponse = await axios({
+    method: "post",
+    url: "http://localhost:3000/addAdmins",
+    data: {
+      groupId: currentGroupId,
+      addAdmins: selectedUsers,
+    },
+  });
+
+  alert(adminResponse.data);
+});
+
+removeUsers.addEventListener("click", async () => {
+  const token = localStorage.getItem("token");
+
+  if (removeClickCount % 2 == 0) {
+    removeUsersFrom.style.display = "block";
+    removeClickCount++;
+    allMembers.textContent = "";
+
+    console.log(currentGroupId);
+
+    let allUsers = await axios({
+      method: "get",
+      url: `http://localhost:3000/getAllGroupMembers/${currentGroupId}`,
+
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    console.log(allUsers.data);
+
+    allUsers.data.forEach((data) => {
+      let userDetails = existingUser.cloneNode(true);
+
+      userDetails.children[0].value = data.id;
+      userDetails.children[1].textContent = data.name;
+      allMembers.appendChild(userDetails);
+    });
+  } else {
+    removeUserForm.style.display = "none";
+    removeClickCount++;
+  }
+});
+
+removeUsersFrom.addEventListener("submit", async (e) => {
+  const token = localStorage.getItem("token");
 
   e.preventDefault();
 
   const selectedUsers = [];
   const userDivs = document.querySelectorAll(".user");
 
-  userDivs.forEach((user) =>{
-      const checkbox = user.querySelector('input[type="checkbox"]');
+  userDivs.forEach((user) => {
+    const checkbox = user.querySelector('input[type="checkbox"]');
 
-      if(checkbox.checked){
-          selectedUsers.push(checkbox.value);
-      }
-  })
+    if (checkbox.checked) {
+      selectedUsers.push(checkbox.value);
+    }
+  });
 
   console.log(selectedUsers);
 
-  const adminResponse = await   axios({
+  const removeresponse = await axios({
     method: "post",
-    url: "http://localhost:3000/addAdmins",
+    url: "http://localhost:3000/removeUsers",
     data: {
-      groupId:currentGroupId,
-      addAdmins:selectedUsers,
-     
+      groupId: currentGroupId,
+      removeUsers: selectedUsers,
     },
-  })
+  });
 
-
-  alert(adminResponse.data);
-
-
-})
-
-
-removeUsers.addEventListener('click',async()=>{
-
-    const token = localStorage.getItem("token");
-
-    if(removeClickCount%2==0){
-       removeUsersFrom.style.display='block';
-       removeClickCount++;
-    allMembers.textContent = "";
-
-
-    console.log(currentGroupId);
-
-    let allUsers = await axios({
-        method: "get",
-        url: `http://localhost:3000/getAllGroupMembers/${currentGroupId}`,
-  
-        headers: {
-          Authorization: token,
-        },
-      });
-
-      console.log(allUsers.data);
-
-      
-    allUsers.data.forEach((data) => {
-        let userDetails = existingUser.cloneNode(true);
-  
-        userDetails.children[0].value = data.id;
-        userDetails.children[1].textContent = data.name;
-        allMembers.appendChild(userDetails);
-      });
-
-
-      
-
-    }
-
-    else{
-        removeUserForm.style.display = "none";
-        removeClickCount++;
-    }
-
-
-})
-
-
-removeUsersFrom.addEventListener("submit",async(e)=>{
-
-    const token = localStorage.getItem("token");
-
-    e.preventDefault();
-
-    const selectedUsers = [];
-    const userDivs = document.querySelectorAll(".user");
-
-    userDivs.forEach((user) =>{
-        const checkbox = user.querySelector('input[type="checkbox"]');
-
-        if(checkbox.checked){
-            selectedUsers.push(checkbox.value);
-        }
-    })
-
-    console.log(selectedUsers);
-
-    const removeresponse = await   axios({
-        method: "post",
-        url: "http://localhost:3000/removeUsers",
-        data: {
-          groupId:currentGroupId,
-          removeUsers:selectedUsers,
-         
-        },
-      })
-
-
-      alert(removeresponse.data);
-      removeUsers.click();
-      removeClickCount--;
-
-
-
-})
-
-
-
-
-
-
-
-
-
-
-
+  alert(removeresponse.data);
+  removeUsers.click();
+  removeClickCount--;
+});
 
 let clickcount = 0;
 addusers.addEventListener("click", async () => {
@@ -229,88 +184,74 @@ addusers.addEventListener("click", async () => {
   }
 });
 
+addUserForm.addEventListener("submit", async (e) => {
+  const token = localStorage.getItem("token");
 
+  e.preventDefault();
 
+  const selectedUsers = [];
+  const userDivs = document.querySelectorAll(".user");
 
+  userDivs.forEach((user) => {
+    const checkbox = user.querySelector('input[type="checkbox"]');
 
-addUserForm.addEventListener("submit",async(e)=>{
+    if (checkbox.checked) {
+      selectedUsers.push(checkbox.value);
+    }
+  });
 
-    const token = localStorage.getItem("token");
-
-    e.preventDefault();
-
-    const selectedUsers = [];
-    const userDivs = document.querySelectorAll(".user");
-
-    userDivs.forEach((user) =>{
-        const checkbox = user.querySelector('input[type="checkbox"]');
-
-        if(checkbox.checked){
-            selectedUsers.push(checkbox.value);
-        }
-    })
-
-  
-
- const newUsersAdded = await   axios({
+  const newUsersAdded = await axios({
     method: "post",
     url: "http://localhost:3000/newUsersAdd",
     data: {
-      groupId:currentGroupId,
-      newUsers:selectedUsers,
-     
+      groupId: currentGroupId,
+      newUsers: selectedUsers,
     },
-  })
+  });
 
   alert(newUsersAdded.data);
   addusers.click();
-  
- 
-  addUserForm.reset();
 
+  addUserForm.reset();
 });
 
-
-
-
-
-
-
-
-
+function isValidURL(url) {
+  try {
+    new URL(url);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
 let currentGroupId = null;
 
 let prevClickedItem = null;
 
 userGroupsList.addEventListener("click", async (e) => {
-
   addusers.style.display = "none";
   removeUsers.style.display = "none";
   addAdmins.style.display = "none";
   if (e.target.classList.contains("button")) {
+    const token = localStorage.getItem("token");
 
-   const token = localStorage.getItem("token");
+    currentGroupId = e.target.value;
 
-     
-   currentGroupId = e.target.value;
+    const checkAdmin = await axios({
+      method: "get",
+      url: `http://localhost:3000/checkAdmin/${currentGroupId}`,
 
- const checkAdmin = await axios({
-  method: "get",
-  url: `http://localhost:3000/checkAdmin/${currentGroupId}`,
-  
-  headers: {
-    Authorization: token,
-  },
-})
+      headers: {
+        Authorization: token,
+      },
+    });
 
-if(checkAdmin.data.admin){
-  addusers.style.display = "block";
-  removeUsers.style.display = "block";
-  addAdmins.style.display = "block";
-}
-chatMessages.textContent = "";
-
+    if (checkAdmin.data.admin) {
+      addusers.style.display = "block";
+      removeUsers.style.display = "block";
+      addAdmins.style.display = "block";
+    }
+    chatMessages.textContent = "";
 
     chatContainer.style.display = "block";
     groupName.textContent = e.target.textContent;
@@ -319,8 +260,7 @@ chatMessages.textContent = "";
     if (prevClickedItem !== null) {
       prevClickedItem.style.backgroundColor = "";
       addUserForm.style.display = "none";
-      removeUsersFrom.style.display='none';
-     
+      removeUsersFrom.style.display = "none";
     }
     clickedItem.style.backgroundColor = "purple";
     prevClickedItem = clickedItem;
@@ -331,6 +271,23 @@ chatMessages.textContent = "";
     });
 
     response.data.messages.forEach((msg) => {
+      if (isValidURL(msg.message)) {
+        let userName = localStorage.getItem(msg.SignupId);
+
+        const a = document.createElement("a");
+
+        a.style.marginBottom = "10px";
+
+        a.href = msg.message;
+        a.textContent = `${userName}:: Download file`;
+
+        chatMessages.appendChild(a);
+        const lineBreak = document.createElement("br");
+        chatMessages.appendChild(lineBreak);
+
+        return;
+      }
+
       const messageElement = document.createElement("p");
       messageElement.classList.add("message");
       let userName = localStorage.getItem(msg.SignupId);
@@ -340,20 +297,58 @@ chatMessages.textContent = "";
   }
 });
 
+document
+  .getElementById("send-file-button")
+  .addEventListener("click", async () => {
+    const fileInput = document.getElementById("file-input");
+
+    const formData = new FormData();
+    formData.append("file-lemon", fileInput.files[0]);
+    formData.append("groupId", currentGroupId);
+
+    // console.log(formData.get('file-lemon'))
+
+    const token = localStorage.getItem("token");
+
+    const response = await axios({
+      method: "post",
+      url: "http://localhost:3000/sendFile",
+      data: formData,
+      headers: {
+        Authorization: token,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log(response.data.url);
+    socket.emit("url", {
+      url: response.data.url,
+      groupId: currentGroupId,
+    });
+
+    const lineBreak = document.createElement("br");
+    const a = document.createElement("a");
+    a.href = response.data.url;
+    a.textContent = `Divyanshu:: Download file`;
+
+    chatMessages.appendChild(a);
+
+    chatMessages.appendChild(lineBreak);
+
+    fileInput.value = "";
+  });
+
 sendButton.addEventListener("click", async () => {
   if (currentGroupId === null) {
     console.log("No group selected");
     return;
   }
 
-  
-
-
   const message = messageInput.value;
-  socket.emit('message',{
-    message:message,
+  socket.emit("message", {
+    message: message,
     groupId: currentGroupId,
-  })
+  });
   const token = localStorage.getItem("token");
 
   const response = await axios({
@@ -396,18 +391,31 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-
-
-socket.on('message',(msg)=>{
+socket.on("message", (msg) => {
   console.log(msg);
 
-  if(currentGroupId == msg.groupId){
-
-  const message = msg.message
-  const messageElement = document.createElement("p");
-  messageElement.classList.add("message");
-  messageElement.textContent = `Divyanshu:: ${message}`;
-  chatMessages.appendChild(messageElement);
-  messageInput.value = "";
+  if (currentGroupId == msg.groupId) {
+    const message = msg.message;
+    const messageElement = document.createElement("p");
+    messageElement.classList.add("message");
+    messageElement.textContent = `Divyanshu:: ${message}`;
+    chatMessages.appendChild(messageElement);
+    messageInput.value = "";
   }
-})
+});
+
+socket.on("url", (msg) => {
+  console.log(msg);
+
+  if (currentGroupId == msg.groupId) {
+    const lineBreak = document.createElement("br");
+    const a = document.createElement("a");
+    a.href = msg.url;
+    a.textContent = `Divyanshu:: Download file`;
+
+    chatMessages.appendChild(a);
+
+    chatMessages.appendChild(lineBreak);
+    fileInput.value = "";
+  }
+});
